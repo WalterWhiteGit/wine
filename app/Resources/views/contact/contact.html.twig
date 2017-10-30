@@ -1,0 +1,89 @@
+{% include 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{{ asset('resources/css/form/contact-form.css') }}">
+
+    {% endblock %}
+
+{% block main %}
+
+<section class="contain-form">
+    {{ form_start(form,{'attr':{'novalidate':'novalidate'},'attr':{'class':'contact-form' } }) }}
+
+
+    <div>
+        {{ form_label(form.object,"Votre demande concerne :") }}
+    </div>
+
+    <div>
+        {{ form_widget(form.object) }}
+    </div>
+
+    {# firsname field#}
+    <div>
+    {{ form_label(form.firstname,"Votre prénom") }}
+        </div>
+
+    <div>
+    {{ form_widget(form.firstname) }}
+        </div>
+
+    {# lastname field#}
+    <div>
+        {{ form_label(form.lastname,"Votre nom") }}
+        </div>
+
+    <div>
+        {{ form_widget(form.lastname) }}
+        </div>
+
+    {# adress email field#}
+    <div>
+    {{ form_label(form.email,"Vous écrire") }}
+        </div>
+
+    <div>
+        {{ form_widget(form.email) }}
+        </div>
+
+    {# phonenumber field#}
+
+    <div>
+        {{ form_label(form.phonenumber,"Vous joindre") }}
+        </div>
+
+    <div>
+        {{ form_widget(form.phonenumber) }}
+        </div>
+
+    {# message field#}
+    <div>
+        {{ form_label(form.content,"Votre message") }}
+        </div>
+    <div>
+        {{ form_widget(form.content) }}
+        </div>
+
+
+
+
+    <div><input type="submit" name="submit" value="Envoyer"></div>
+    {{ form_end(form) }}
+
+
+    {# errors field#}
+    <div>
+        {{ form_errors(form.firstname) }}
+        {{ form_errors(form.lastname) }}
+        {{ form_errors(form.email) }}
+        {{ form_errors(form.phonenumber) }}
+        {{ form_errors(form.content) }}
+        </div>
+
+
+</section>
+
+
+
+{% endblock %}
