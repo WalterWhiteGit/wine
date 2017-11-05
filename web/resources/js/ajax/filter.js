@@ -1,19 +1,14 @@
 $(document).ready(function () {
 
-
-
-
-
 // Show search filter
 
     $('.contain-field').hide();
 
     $('.search-title').on('click',function () {
 
-        $('.contain-field').slideToggle(800);
+    $('.contain-field').slideToggle(800);
 
     });
-
 
 
 // Ajax query field name
@@ -37,9 +32,8 @@ $(document).ready(function () {
             datalist.empty();
 
             var winename = name.val();
-
-            console.log(name.val());
-
+            
+// Ajax 
             $.ajax({
                 method:'POST',
                 dataType:'json',
@@ -47,14 +41,11 @@ $(document).ready(function () {
                 url:'/ajax',
                 success:ajaxSearch
                 });
-
             }
          });
 
 
     function ajaxSearch (data) {
-
-        console.log(data);
 
        if(data.length == 0 ){
 
@@ -70,14 +61,9 @@ $(document).ready(function () {
                var option = document.createElement('option');
                option.setAttribute('value', value.productName);
                datalist.append(option);
-
            })
        }
     }
-
-
-
-
 
 
 // Ajax query field Région
@@ -94,8 +80,7 @@ $(document).ready(function () {
 
             var wineaera = aera.val();
 
-            console.log(aera.val());
-
+// Ajax 
             $.ajax({
                 method:'POST',
                 dataType:'json',
@@ -110,8 +95,6 @@ $(document).ready(function () {
 
     function aeraSearch (data) {
 
-        console.log(data);
-
         if(data.length == 0 ){
 
 
@@ -122,7 +105,6 @@ $(document).ready(function () {
 
         else {
             $.each(data, function (index, value) {
-
 
                 var option = document.createElement('option');
                 option.setAttribute('value', value.productArea);
