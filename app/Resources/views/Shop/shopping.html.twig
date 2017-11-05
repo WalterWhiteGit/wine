@@ -1,1 +1,105 @@
-coucou
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('resources/css/shopping.css') }}">
+    {% endblock %}
+
+{% block main%}
+<main>
+
+    <section class="search-bar">
+
+        {{ form_start(form, {'attr':{'novalidate':'novalidate'}, 'attr':{'class':'search-form'} }) }}
+
+            <h2 class="search-title">Affiner la recherche</h2>
+
+
+        <div class="contain-field">
+{# field search by name wine#}
+
+            <div>
+                <div>{{ form_label(form.productName,"Par nom") }}</div>
+                <div>{{ form_widget(form.productName,{'attr':{'list':'listname'}}) }}</div>
+                <datalist id="listname">
+
+                </datalist>
+            </div>
+
+{# field search by year wine#}
+
+            <div>
+                <div>{{ form_label(form.year,"Par année") }}</div>
+                <div>{{ form_widget(form.year,{'attr':{'list':'listyear'}}) }}</div>
+                <datalist id="listyear">
+
+                {% for i in 1998..2015 %}
+
+                <option value="{{ i }}" >
+
+                    {% endfor %}
+                </datalist>
+            </div>
+
+{# field search by area #}
+            <div>
+                <div>{{ form_label(form.productArea, "Par Région") }}</div>
+                <div>{{ form_widget(form.productArea,{'attr':{'list':'listaera'}}) }}</div>
+                <datalist id="listaera">
+
+                </datalist>
+            </div>
+
+{# field search by country#}
+            <div>
+                <div>{{ form_label(form.productCountry, "Par Pays") }}</div>
+                <div>{{ form_widget(form.productCountry,{'attr':{'list':'listcountry'}}) }}</div>
+                <datalist id="listcountry">
+
+                </datalist>
+            </div>
+
+
+{# fiel search by wine area #}
+
+
+
+
+
+        <div><input type="submit" name="submit" value="Filtrer"></div>
+
+        {{ form_end(form) }}
+
+        </div>
+    </section>
+
+    <section class="contain-list">
+
+    {% for results in results %}
+
+
+        <div class="contain-product">
+            <div>
+                <img src="{{ asset('resources/img/shop/'~results.productImage~'.png') }}" alt="">
+                </div>
+
+
+            <div>
+                <h2 class="prod-title">{{ results.productName }}</h2>
+                <p class="prod-country"><u>Pays</u> :<img src="{{ asset('resources/img/shop/flag/'~results.productCountry~'.png') }}"></p>
+                <p class="prod-line"><u>Région</u> : {{ results.productArea}}</p>
+                <p class="prod-year"><u>Année</u> : {{ results.year }}</p>
+                <p class="prod-description">{{ results.productDescription }}</p>
+                <p class="prod-price">{{ results.salePrice }}&euro;</p>
+                </div>
+
+        </div>
+
+        {% endfor %}
+    </section>
+</main>
+
+    {% block javascripts %}
+        <script src="{{ asset('resources/js/ajax/filter.js') }}"></script>
+        {% endblock %}
+
+{% endblock %}
