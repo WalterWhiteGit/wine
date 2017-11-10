@@ -46,17 +46,18 @@ class ContactEventSubscriber implements EventSubscriberInterface
 
         $mail = $event->getEmail();
         $firstname = $event->getFirstname();
+        $content = $event->getContent();
 
 
 
         //
         $sendmail = (new \Swift_Message())
 
-                ->setFrom('wine@gmail.com')
+                ->setFrom('customer-contact@gmail.com')
                 ->setSubject('Demande de contact de '.$firstname)
                 ->setTo($mail)
                 ->setContentType('Text/Html')
-                ->setBody('Test reussi');
+                ->setBody($content);
 
 
 
