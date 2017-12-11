@@ -1,207 +1,341 @@
 $(document).ready(function () {
 
+/********************************************* Filtre *************************************
+******************************************************************************************/
 
-    displayProducts();
-    displayCountry();
-    displayArea();
+// Country on click
+    $('.country').on('click',function () {
+        $('.filter-country').toggle();
+    });
 
+// Area on click
 
-});
+    $('.area').on('click',function () {
+        $('.filter-area').toggle();
+    });
 
-/****************************** Functions ***********************
+// Year on click
+    $('.year').on('click',function () {
+        $('.filter-year').toggle();
+    });
+
+// type on click
+
+    $('.type').on('click',function () {
+        $('.filter-type').toggle();
+    });
+
+/****************************** Variables ***********************
+****************************************************************/
+
+    var country_w=[];
+    var area_w =[];
+    var type_w =[];
+
+/*****************************************************************
+/****************************** FUNCTIONS ***********************
  ****************************************************************/
 
-// Afficher les produits
+// Call Ajax
 
-function displayProducts() {
+function ajaxRequest (target,action)
+    {
+        $.ajax({
+            method:'get',
+            dataType:'json',
+            url:target,
+            success:action
+        });
+    }
+
+// Call Ajax with data
+
+function ajaxDataRequest (target,adata) {
 
     $.ajax({
-        method:'POST',
+        method:'post',
         dataType:'json',
-        url:'/shopwine',
+        url:target,
+        data:adata,
         success:display
     });
 }
 
-// Afficher les pays
-function displayCountry() {
+/**********************************************
+SI CASE COCHEE, ACTUALISER LA LISTE DES REGIONS
+*/
+function showArea () {
 
-    $.ajax({
-        method: 'POST',
-        dataType: 'json',
-        url: '/pays',
-        success: country
-    });
-}
+    $('input[name="area"]').on('change', function () {
 
+        alert('click');
 
-// Afficher les régions viticoles
-function displayArea() {
+// Initiate Array
+        area_w = [];
 
-    $.ajax({
-        method:'POST',
-        dataType:'json',
-        url:'/aera',
-        success:area
-    });
-}
-
-function area (data) {
-
-    $('.contain-area').empty();
-
-
-    $.each(data, function (index, value) {
-        var contenu;
-        contenu =  '<div class="filter-area">';
-        contenu += '<div class="contain-value">';
-        contenu += '<input type="checkbox" name="area" id="area" value='+value.area+'>'+value.area;
-        contenu += '</div></div></div>';
-
-        $('.contain-area').append(contenu);
-
-    });
-
-    /**********************************************
-     SI CASE COCHEE ACTUALISER LA LISTE DES REGIONS
-     *********************************************/
-
-    $('input[name="area"]').on('change',function () {
-
-// Create array
-        var area_w = [];
-
-// Effacer le contenu du filtre actif pays
+// Delete actif contain by country
         $('.area-filter').remove();
 
 // Get all cases checkeds
         $('#area:checked').each(function () {
 
-            // Fill array
+// Fill array
             area_w.push($(this).val());
-
         });
 
+/**************************************************************
+Si on coche une région d'un pays on affiche les produits de la
+ région du pays séléctionné.
+**************************************************************/
+
+ // Vériier que aucune Région est séléctionnée
         if (area_w.length > 0) {
 
-            $.ajax({
-                method: 'POST',
-                dataType: 'JSON',
-                data: {'data': area_w},
-                url: '/aera',
-                success: display
-            });
+// Vérifier que aucun pays est séléctionné
+            if (country_w.length > 0) {
+
+                alert(country_w);
+                ajaxDataRequest('/aera',{'data':area_w,'array':country_w });
+
+                }
+
+            alert(area_w);
 
             contenu = '<div class="area-filter">';
 
             for (i = 0; i < area_w.length; i++) {
 
                 contenu += '<p>Région :' + area_w[i] + '</p>';
-            }
+             }
 
             contenu += '<p class="clear-filter">Effacer tous les filtres</p></div>';
 
             $('.title-filter').append(contenu);
         }
 
-// Si aucune case région est cochée.
+// Si aucune case région est cochée mais q'un pays reste coché, on affiche uniquement les vins de ce pays
+
         else {
-            $('.contain-list').empty();
-            $.ajax({
-                method:'POST',
-                dataType:'json',
-                url:'/shopwine',
-                success:display
-            });
+
+            if (country_w.length > 0){
+
+                alert('Pays :' +  country_w);
+
+                $.ajax({
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {'data': country_w},
+                    url: '/pays',
+                    success: countryProducts
+                });
+            }
+
+            else {
+                $('.contain-list').empty();
+
+                ajaxRequest('/shopwine',display);
+            }
         }
     });
+ }
 
+/***************************************
+SI CASE COCHEE ACTUALISER LA LISTE PAYS
+**************************************/
+
+function showCountry() {
+
+        $('input[name="country"').on('change',function () {
+
+            country_w = [];
+
+// Effacer le contenu du filtre actif pays
+            $('.activ-filter,.area-filter').remove();
+
+// Récupérer toutes les cases cochées.
+
+            $('#country:checked').each(function () {
+
+                country_w.push($(this).val());
+            });
+
+            if (country_w.length > 0) {
+
+                alert(country_w);
+
+                if (type_w.length > 0) {
+
+                    alert(type_w);
+
+                    ajaxDataRequest('/type',{'type':type_w,'country': country_w });
+
+                }
+
+                else {
+
+                    ajaxDataRequest('/pays',{"data":country_w });
+
+// Afficher les filtres actifs
+
+                    contenu = '<div class="activ-filter">';
+
+                    for (i = 0; i < country_w.length; i++) {
+
+                        contenu += '<p>Pays : ' + country_w[i] + '</p>';
+                    }
+
+                    contenu += '<p class="clear-filter">Effacer tous les filtres</p></div>';
+
+                    $('.title-filter').append(contenu);
+                    }
+                }
+
+// Si aucune case pays est cochée.
+            else {
+
+                    $('.contain-list').empty();
+
+                    ajaxRequest('/shopwine',display);
+
+                    $('.contain-area').empty();
+
+                    ajaxRequest('/aera',area);
+                }
+        });
+    }
+/***************************************
+SI CASE COCHEE ACTUALISER LA LISTE PAYS
+**************************************/
+
+function showType(){
+
+    $('input[name="type"').on('change',function () {
+
+            type_w = [];
+
+            $('#type:checked').each(function () {
+
+            type_w.push($(this).val());
+
+        });
+
+        if (type_w.length > 0) {
+
+
+            if (country_w.length > 0) {
+
+
+                alert('pays selectionné :' + country_w);
+
+                ajaxDataRequest('/type',{'type':type_w,'country':country_w });
+
+                $('.clear-filter').remove();
+
+                console.log(type_w);
+
+                for (i = 0; i < type_w.length; i++) {
+
+                    contenu = '<p class="typefilter">Type : ' + type_w[i].toUpperCase() + '</p>';
+                }
+
+                contenu += '<p class="clear-filter">Effacer tous les filtres</p></div>';
+
+                $('.activ-filter').append(contenu);
+            }
+
+            else {
+
+                $('.activ-filter,.area-filter').remove();
+
+                ajaxDataRequest('/type',{"type":type_w });
+
+
+// Afficher les filtres actifs
+
+                contenu = '<div class="activ-filter">';
+
+                for (i = 0; i < type_w.length; i++) {
+
+                    contenu += '<p class="typefilter">Type : ' + type_w[i] + '</p>';
+                }
+
+                contenu += '<p class="clear-filter">Effacer tous les filtres</p></div>';
+
+                $('.title-filter').append(contenu);
+            }
+        }
+
+    });
 }
 
+/***************************************************************************************
+*************************** AFFICHAGE DE LA LISTE DES REGIONS ****************************
+**************************************************************************************/
+    function area (data) {
 
-function country (data){
+        $('.contain-area').empty();
+
+
+        $.each(data, function (index, value) {
+            var contenu;
+            contenu =  '<div class="filter-area">';
+            contenu += '<div class="contain-value">';
+            contenu += '<div><input type="checkbox" name="area" id="area" value='+value.area+'>'+value.area+'</div>';
+            contenu += '</div></div>';
+
+            $('.contain-area').append(contenu);
+
+        });
+        showArea()
+    }
+/***************************************************************************************
+ *************************** AFFICHAGE DE LA LISTE DES PAYS ****************************
+ **************************************************************************************/
+
+function country (data) {
 
     $('.contain-country').empty();
 
-    $.each(data, function (index,value){
+    $.each(data, function (index, value) {
 
         var contenu;
 
-        contenu =  '<div class="filter-country">';
+        contenu = '<div class="filter-country">';
         contenu += '<div class="contain-value">';
-        contenu += '<input type="checkbox" name="country" id="country" value='+value.productCountry+'>'+value.productCountry;
-        contenu += '</div></div></div>';
+        contenu += '<div><input type="checkbox" name="country" id="country" value=' + value.productCountry + '><img class="filter-flag" src="resources/img/shop/flag/' + value.productCountry + '.png">' + value.productCountry + '</div>';
+        contenu += '</div></div>';
 
         $('.contain-country').append(contenu);
 
     });
 
-    /***************************************
-     SI CASE COCHEE ACTUALISER LA LISTE PAYS
-     **************************************/
-
-    $('input[name="country"').on('change',function () {
-
-        var country_w = [];
-
-// Effacer le contenu du filtre actif pays
-        $('.activ-filter,.area-filter').remove();
-
-// Récupérer toutes les cases cochées.
-
-        $('#country:checked').each(function () {
-
-            country_w.push($(this).val());
-        });
-
-        if (country_w.length > 0) {
-
-            $.ajax({
-                method: 'POST',
-                dataType: 'json',
-                data: {'data': country_w},
-                url: '/pays',
-                success: countryProducts
-            });
-
-// Afficher les filtres actifs
-
-            contenu = '<div class="activ-filter">';
-
-            for (i = 0; i < country_w.length; i ++){
-
-                contenu+='<p>Pays : '+ country_w[i] + '</p>';
-            }
-
-            contenu += '<p class="clear-filter">Effacer tous les filtres</p></div>';
-
-            $('.title-filter').append(contenu);
-
-        }
-
-
-// Si aucune case pays est cochée.
-        else {
-
-            $('.contain-list').empty();
-            $.ajax({
-                method:'POST',
-                dataType:'json',
-                url:'/shopwine',
-                success:display
-            });
-
-            $('.contain-area').empty();
-
-            displayArea();
-
-        }
-    });
+    showCountry();
 
 }
 
+/***********************************************************************************
+*************************** AFFICHAGE DES TYPES DE VINS ****************************
+************************************************************************************/
 
+function type (data) {
 
+        //$('.contain-type').empty();
+
+        $.each(data, function (index, value) {
+
+            var contenu;
+
+            contenu = '<div class="filter-type">';
+            contenu += '<div class="contain-value">';
+            contenu += '<div><input type="checkbox" name="type" id="type" value=' + value.type +'>'+ value.type +'<img id="' + value.type + '" class="filter-flag" src="resources/img/shop/' + value.imgtype + '"></div>';
+            contenu += '</div></div>';
+
+            $('.contain-type').append(contenu);
+
+        });
+
+        showType();
+    }
 
 // Afficher les régions viticoles
 function areaByCountry (data) {
@@ -216,72 +350,10 @@ function areaByCountry (data) {
         contenu += '</div></div></div>';
 
         $('.contain-area').append(contenu);
+    });
 
-    })
+    showArea();
 }
-
-
-/********************************************* Filtre *************************************
-******************************************************************************************/
-
-// Country on click
-$('.country').on('click',function () {
-
-    $('.filter-country').toggle();
-
-});
-
-// Area on click
-
-$('.area').on('click',function () {
-
-    $('.filter-area').toggle();
-});
-
-// Year on click
-$('.year').on('click',function () {
-
-    $('.filter-year').toggle();
-});
-
-
-// type on click
-
-$('.type').on('click',function () {
-
-    $('.filter-type').toggle();
-
-});
-
-/*************************************** Trier les produits ***********************
- *********************************************************************************/
-
-$('#tri').on('change',function () {
-
-    if ($('#tri').val() !== 'nul'){
-
-        var choice = $('#tri').val();
-
-        $.ajax({
-            method:'POST',
-            dataType:'json',
-            data:{'data': choice},
-            url:'/desc-price',
-            success:priceByAsc
-        });
-    }
-
-    else {
-
-        $('.contain-list').empty();
-        $.ajax({
-            method:'POST',
-            dataType:'json',
-            url:'/shopwine',
-            success:displayProducts
-        });
-    }
-});
 
 
 function deleteDuplicates(array) {
@@ -299,11 +371,11 @@ function deleteDuplicates(array) {
     return area_array
 }
 
+
 /********************************* Affichage des produits en Ajax ************************
  *****************************************************************************************/
 
 function display(data) {
-
 
         if (data.length == 0){
 
@@ -320,14 +392,21 @@ function display(data) {
                 var contenu;
                 contenu = '<div class="contain-product">';
                 contenu += '<div><img class="prod-img" src="resources/img/shop/'+value.productImage+'.png">' +
-                                 '<p class="prod-price">'+value.salePrice+'&euro;</p></div>';
-
+                                 '<p class="prod-price">'+value.salePrice.toFixed(2) +'&euro;</p>' +
+                                 '<p class="add-cart">Ajouter au panier</p></div>';
+// Add title product
                 contenu += '<div><h3 class="prod-title">'+value.productName.toUpperCase()+'</h3>';
+// Add picture product
                 contenu += '<p class= "prod-country"><u>Pays</u> :<img src="resources/img/shop/flag/'+value.productCountry+'.png"></p>';
+// Add aera product
                 contenu += '<p class="prod-line"><u>Région</u> : '+value.area+'</p>';
-                contenu += '<p class="prod-color"><u>Type</u>: vin '+ value.type+'</p>';
+//  Add type of product
                 contenu += '<p class="prod-year"><u>Année</u> : '+value.year+'</p>';
-                contenu += '<p class="prod-description">'+ str.substr(0,200)+'...</p>';
+// Add type of product
+                contenu += '<p class="prod-color"><u>Type</u>: <img class="img-type" src="resources/img/shop/'+ value.imgtype +'"></p>';
+
+                contenu += '<p class="prod-description">'+ str.substr(0,300)+'...<a class="prod-more" href="http://localhost:8000/Shop/'+ value.slug+'">';
+                contenu +=  'En savoir plus</a></p>';
                 if (value.quantityInStock > 5){
 
                     contenu += '<div class="circle-qtyH"></div><a class="prod-quantity">    Disponible dans notre cave</a></div>'
@@ -341,99 +420,27 @@ function display(data) {
                     contenu += '<div class="circle-qtyL"></div><a class="prod-quantity">    Plus que '+value.quantityInStock+' dans notre cave</a>'
                 }
 
-                contenu +='<p class="add-cart">Ajouter au panier</p>';
-
                 contenu += '</div>';
 
                 // Add elements
                 $('.contain-list').append(contenu);
+
+               // $('.prod-test').attr("href","{{ url('shop.product',{'slug':"+value.slug+"}) }}");
+                //$('.prod-test').text(value.slug);
             })
-
         }
-}
-
-
-// Afficher les prix par ordre croissant ou décroissant
-function priceByAsc (data) {
-
-    if (data.length==0){
-
     }
-
-    else {
-
-        $('.contain-list').empty();
-        $.each(data, function (index, value) {
-
-            var contenu;
-            contenu = '<div class="contain-product">';
-            contenu += '<div><img class="prod-img" src="resources/img/shop/'+value.productImage+'.png"></div>';
-            contenu += '<div><h2 class="prod-title">'+value.productName+'</h2>';
-            contenu += '<p class= "prod-country"><u>Pays</u> :<img src="resources/img/shop/flag/'+value.productCountry+'.png"></p>';
-            contenu += '<p class="prod-line"><u>Région</u> :'+value.area+'</p>';
-            contenu += '<p class="prod-year"><u>Année</u> :'+value.year+'</p>';
-            contenu += '<p class="prod-description">'+value.productDescription+'</p>';
-            contenu += '<p class="prod-price">'+value.salePrice+'&euro;</p></div>';
-            contenu += '</div>';
-
-            // Add elements
-            $('.contain-list').append(contenu);
-
-        })
-    }
-}
-
-
-function countryProducts(data) {
-
-    if (data.length == 0){
-
-        $('.contain-list').append('<p>Aucun produits à afficher</p>');
-    }
-    else {
-        $('.contain-list').empty();
-
-        $.each(data[0], function (index, value) {
-            // Create elements
-
-            var str =  value.productDescription;
-            var contenu;
-            contenu = '<div class="contain-product">';
-            contenu += '<div><img class="prod-img" src="resources/img/shop/'+value.productImage+'.png">' +
-                '<p class="prod-price">'+value.salePrice+'&euro;</p></div>';
-
-            contenu += '<div><h3 class="prod-title">'+value.productName.toUpperCase()+'</h3>';
-            contenu += '<p class= "prod-country"><u>Pays</u> :<img src="resources/img/shop/flag/'+value.productCountry+'.png"></p>';
-            contenu += '<p class="prod-line"><u>Région</u> : '+value.area+'</p>';
-            contenu += '<p class="prod-color"><u>Type</u>: vin '+ value.type+'</p>';
-            contenu += '<p class="prod-year"><u>Année</u> : '+value.year+'</p>';
-            contenu += '<p class="prod-description">'+ str.substr(0,200)+'...</p>';
-            if (value.quantityInStock > 5){
-
-                contenu += '<div class="circle-qtyH"></div><a class="prod-quantity">    Disponible dans notre cave</a></div>'
-            }
-            else if (value.quantityInStock == 0){
-
-                contenu += '<div class="circle-qtyN"></div><a class="prod-quantity">    Momentanément absent de notre cave</a>'
-            }
-            else {
-
-                contenu += '<div class="circle-qtyL"></div><a class="prod-quantity">    Plus que '+value.quantityInStock+' dans notre cave</a></div>'
-            }
-            contenu += '</div>';
-
-            // Add elements
-            $('.contain-list').append(contenu);
-        })
-
-        areaByCountry(data);
-    }
-
-}
-
 /**************************
  * Effacer tous les filtres
  *************************/
+
+    ajaxRequest('/aera',area);
+    ajaxRequest('/type',type);
+    ajaxRequest('/pays',country);
+    ajaxRequest('/shopwine',display);
+
+});
+
 
 
 
