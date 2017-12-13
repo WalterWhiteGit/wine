@@ -2,6 +2,9 @@ $(document).ready(function () {
 
 /********************************************* Filtre *************************************
 ******************************************************************************************/
+// Icone de chargement
+
+    $('.buttonload').hide();
 
 // Country on click
     $('.country').on('click',function () {
@@ -42,6 +45,12 @@ function ajaxRequest (target,action)
     {
         $.ajax({
             method:'get',
+            beforeSend:function () {
+               $('.buttonload').fadeIn();
+            },
+            complete:function () {
+                $('.buttonload').fadeOut();
+            },
             dataType:'json',
             url:target,
             success:action
@@ -50,16 +59,31 @@ function ajaxRequest (target,action)
 
 // Call Ajax with data
 
-function ajaxDataRequest (target,adata) {
+function ajaxDataRequest (target,adata,action) {
 
     $.ajax({
         method:'post',
         dataType:'json',
         url:target,
         data:adata,
-        success:display
+        success:action
     });
 }
+
+
+// Fill filter data
+function filterData( array, data){
+
+    contenu = '<div class="area-filter">';
+
+        for (i = 0; i < array.length; i++) {
+            contenu += '<p>Région :' + data[i] + '</p>';
+        }
+    contenu += '<p class="clear-filter">Effacer tous les filtres</p></div>';
+
+    $('.title-filter').append(contenu);
+}
+
 
 /**********************************************
 SI CASE COCHEE, ACTUALISER LA LISTE DES REGIONS
@@ -68,17 +92,12 @@ function showArea () {
 
     $('input[name="area"]').on('change', function () {
 
-        alert('click');
-
 // Initiate Array
         area_w = [];
-
 // Delete actif contain by country
         $('.area-filter').remove();
-
 // Get all cases checkeds
         $('#area:checked').each(function () {
-
 // Fill array
             area_w.push($(this).val());
         });
@@ -92,50 +111,22 @@ Si on coche une région d'un pays on affiche les produits de la
         if (area_w.length > 0) {
 
 // Vérifier que aucun pays est séléctionné
-            if (country_w.length > 0) {
+            if (type_w.length > 0) { ajaxDataRequest('/aera',{'data':area_w, 'type':type_w},display);}
 
-                alert(country_w);
-                ajaxDataRequest('/aera',{'data':area_w,'array':country_w });
+            else{ ajaxDataRequest('/aera',{'data': area_w},display);}
 
-                }
-
-            alert(area_w);
-
-            contenu = '<div class="area-filter">';
-
-            for (i = 0; i < area_w.length; i++) {
-
-                contenu += '<p>Région :' + area_w[i] + '</p>';
-             }
-
-            contenu += '<p class="clear-filter">Effacer tous les filtres</p></div>';
-
-            $('.title-filter').append(contenu);
-        }
+            }
 
 // Si aucune case région est cochée mais q'un pays reste coché, on affiche uniquement les vins de ce pays
 
-        else {
-
-            if (country_w.length > 0){
-
-                alert('Pays :' +  country_w);
-
-                $.ajax({
-                    method: 'POST',
-                    dataType: 'json',
-                    data: {'data': country_w},
-                    url: '/pays',
-                    success: countryProducts
-                });
-            }
-
             else {
-                $('.contain-list').empty();
+                    if (country_w.length > 0){ajaxDataRequest('/pays',{"data":country_w },display);}
 
-                ajaxRequest('/shopwine',display);
-            }
-        }
+                    else {
+                        $('.contain-list').empty();
+                        ajaxRequest('/shopwine', display);
+                    }
+                }
     });
  }
 
@@ -161,33 +152,25 @@ function showCountry() {
 
             if (country_w.length > 0) {
 
-                alert(country_w);
+                filterData(country_w,country_w);
 
                 if (type_w.length > 0) {
 
                     alert(type_w);
 
-                    ajaxDataRequest('/type',{'type':type_w,'country': country_w });
+                    ajaxDataRequest('/type',{'type':type_w,'country': country_w },display);
 
                 }
 
                 else {
 
-                    ajaxDataRequest('/pays',{"data":country_w });
+                    ajaxDataRequest('/pays',{"data":country_w },display);
 
-// Afficher les filtres actifs
+// Refresh area filter
+                    ajaxDataRequest('/aera',{'aera':country_w},area);
 
-                    contenu = '<div class="activ-filter">';
-
-                    for (i = 0; i < country_w.length; i++) {
-
-                        contenu += '<p>Pays : ' + country_w[i] + '</p>';
                     }
 
-                    contenu += '<p class="clear-filter">Effacer tous les filtres</p></div>';
-
-                    $('.title-filter').append(contenu);
-                    }
                 }
 
 // Si aucune case pays est cochée.
@@ -222,12 +205,12 @@ function showType(){
         if (type_w.length > 0) {
 
 
+
             if (country_w.length > 0) {
 
+                ajaxDataRequest('/aera',{'type':type_w},area);
 
-                alert('pays selectionné :' + country_w);
-
-                ajaxDataRequest('/type',{'type':type_w,'country':country_w });
+                ajaxDataRequest('/type',{'type':type_w,'country':country_w },display);
 
                 $('.clear-filter').remove();
 
@@ -245,24 +228,21 @@ function showType(){
 
             else {
 
+// Refresh filter Aera Wine
+                ajaxDataRequest('/aera',{'type':type_w},area);
+
                 $('.activ-filter,.area-filter').remove();
 
-                ajaxDataRequest('/type',{"type":type_w });
+                ajaxDataRequest('/type',{"type":type_w },display);
 
 
-// Afficher les filtres actifs
-
-                contenu = '<div class="activ-filter">';
-
-                for (i = 0; i < type_w.length; i++) {
-
-                    contenu += '<p class="typefilter">Type : ' + type_w[i] + '</p>';
-                }
-
-                contenu += '<p class="clear-filter">Effacer tous les filtres</p></div>';
-
-                $('.title-filter').append(contenu);
             }
+        }
+
+        else {
+
+            ajaxRequest('/shopwine',display);
+            ajaxRequest('/aera',area);
         }
 
     });
@@ -272,6 +252,8 @@ function showType(){
 *************************** AFFICHAGE DE LA LISTE DES REGIONS ****************************
 **************************************************************************************/
     function area (data) {
+
+        console.log(data);
 
         $('.contain-area').empty();
 
@@ -337,40 +319,6 @@ function type (data) {
         showType();
     }
 
-// Afficher les régions viticoles
-function areaByCountry (data) {
-
-    $('.contain-area').empty();
-    $.each(data[1], function (index, value) {
-        var contenu;
-
-        contenu =  '<div class="filter-area">';
-        contenu += '<div class="contain-value">';
-        contenu += '<input type="checkbox" name="area" id="area" value='+value.area+'>'+value.area;
-        contenu += '</div></div></div>';
-
-        $('.contain-area').append(contenu);
-    });
-
-    showArea();
-}
-
-
-function deleteDuplicates(array) {
-
-    var area_array = [];
-
-    for (var i = 0; i < array.length; i++){
-
-        if(area_array.indexOf(array[i])== -1){
-
-            area_array.push(array[i]);
-        }
-    }
-
-    return area_array
-}
-
 
 /********************************* Affichage des produits en Ajax ************************
  *****************************************************************************************/
@@ -433,13 +381,12 @@ function display(data) {
 /**************************
  * Effacer tous les filtres
  *************************/
-
     ajaxRequest('/aera',area);
     ajaxRequest('/type',type);
     ajaxRequest('/pays',country);
     ajaxRequest('/shopwine',display);
-
 });
+
 
 
 
