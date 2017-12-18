@@ -20,14 +20,16 @@ class ContactEventSubscriber implements EventSubscriberInterface
 
     private $mailer;
     private $doctrine;
+    private $twig;
 
 
 
-    public function __construct(ManagerRegistry $doctrine, \Swift_Mailer $mailer)
+    public function __construct(ManagerRegistry $doctrine, \Swift_Mailer $mailer,\Twig_Environment $twig)
     {
 
         $this->mailer=$mailer;
         $this->doctrine=$doctrine;
+        $this->twig=$twig;
 
     }
 
@@ -47,19 +49,50 @@ class ContactEventSubscriber implements EventSubscriberInterface
         $mail = $event->getEmail();
         $firstname = $event->getFirstname();
         $content = $event->getContent();
+        $reason = $event->getObject();
 
+
+        switch ($reason){
+
+
+            case "RES":
+
+                $reason = "de réservations";
+
+                break;
+
+
+            case "INF":
+
+                $reason = "d'informations";
+
+                break;
+
+            case "REC":
+
+                $reason = "de réclamations";
+
+                break;
+
+        }
 
 
         //
         $sendmail = (new \Swift_Message())
 
                 ->setFrom('customer-contact@gmail.com')
-                ->setSubject('Demande de contact de '.$firstname)
+                ->setSubject($firstname.', votre demande est prise en compte')
                 ->setTo($mail)
-                ->setContentType('Text/Html')
-                ->setBody($content);
+                ->setContentType('text/html')
+                ->setBody($this->twig->render('MailTemplate/confirm.html.twig',
 
+                    ['email'=>$mail, 'firstname'=>$firstname,'reason'=>$reason]
 
+                    ))
+
+                ->addPart($this->twig->render('MailTemplate/confirm.html.twig',
+
+                    ['email'=>$mail, 'firstname'=>$firstname, 'reason'=>$reason]),'text/plain');
 
 
         // Send mail

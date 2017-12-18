@@ -18,6 +18,26 @@ class ContactMailSendMail extends Event
 
     private $firstname;
 
+    private $content;
+
+    private $object;
+
+    /**
+     * @return mixed
+     */
+    public function getObject()
+    {
+        return $this->object;
+    }
+
+    /**
+     * @param mixed $object
+     */
+    public function setObject($object)
+    {
+        $this->object = $object;
+    }
+
     /**
      * @return mixed
      */
@@ -49,6 +69,23 @@ class ContactMailSendMail extends Event
     {
         $this->firstname = $firstname;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param mixed $firstname
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
 
 
 

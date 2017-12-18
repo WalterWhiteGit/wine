@@ -1,0 +1,43 @@
+.size-message{
+
+    color:white;
+}
+
+body{
+
+    background:url('/resources/img/form.jpg') no-repeat;
+    background-size: cover;
+
+}
+
+main{
+
+    display: flex;
+}
+
+.contain-form{
+
+    width: 80%;
+    margin:auto;
+    margin-top: 10%;
+    padding: 20px;
+    display: flex;
+
+}
+
+
+form{
+    width: 60%;
+    background-color: rgba(0,0,0,0.5);
+    margin: auto;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.contact{
+
+    background-color: #580D1D;
+    margin-bottom: 20px;
+}

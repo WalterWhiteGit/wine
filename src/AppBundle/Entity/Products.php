@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * Products
  *
@@ -45,6 +46,37 @@ class Products
 
     private $productName;
 
+
+
+
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="Winetype", inversedBy="idtype")
+     */
+
+    private $winetype;
+
+
+    /**
+     *
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="WineArea", inversedBy="$areawine")
+     */
+
+    private $winearea;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="productCountry", type="string", length=100)
+     */
+
+    private $productCountry;
+
+
     /**
      * @var
      *
@@ -54,13 +86,6 @@ class Products
     private $productImage;
 
 
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="productLine", type="string", length=50)
-     */
-    private $productLine;
 
 
     /**
@@ -108,6 +133,9 @@ class Products
 
 
     private $year;
+
+
+
 
     /**
      * Get id
@@ -167,29 +195,7 @@ class Products
         return $this->productName;
     }
 
-    /**
-     * Set productLine
-     *
-     * @param string $productLine
-     *
-     * @return products
-     */
-    public function setProductLine($productLine)
-    {
-        $this->productLine = $productLine;
 
-        return $this;
-    }
-
-    /**
-     * Get productLine
-     *
-     * @return string
-     */
-    public function getProductLine()
-    {
-        return $this->productLine;
-    }
 
     /**
      * Set productVendor
@@ -381,5 +387,82 @@ class Products
     public function getYear()
     {
         return $this->year;
+    }
+
+
+
+
+    /**
+     * Set productCountry
+     *
+     * @param string $productCountry
+     *
+     * @return Products
+     */
+    public function setProductCountry($productCountry)
+    {
+        $this->productCountry = $productCountry;
+
+        return $this;
+    }
+
+    /**
+     * Get productCountry
+     *
+     * @return string
+     */
+    public function getProductCountry()
+    {
+        return $this->productCountry;
+    }
+
+
+
+    /**
+     * Set winetype
+     *
+     * @param \AppBundle\Entity\Winetype $winetype
+     *
+     * @return Products
+     */
+    public function setWinetype(\AppBundle\Entity\Winetype $winetype = null)
+    {
+        $this->winetype = $winetype;
+
+        return $this;
+    }
+
+    /**
+     * Get winetype
+     *
+     * @return \AppBundle\Entity\Winetype
+     */
+    public function getWinetype()
+    {
+        return $this->winetype;
+    }
+
+    /**
+     * Set winearea
+     *
+     * @param \AppBundle\Entity\WineArea $winearea
+     *
+     * @return Products
+     */
+    public function setWinearea(\AppBundle\Entity\WineArea $winearea = null)
+    {
+        $this->winearea = $winearea;
+
+        return $this;
+    }
+
+    /**
+     * Get winearea
+     *
+     * @return \AppBundle\Entity\WineArea
+     */
+    public function getWinearea()
+    {
+        return $this->winearea;
     }
 }

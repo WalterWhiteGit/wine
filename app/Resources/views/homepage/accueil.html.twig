@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('resources/css/homepage.css') }}">
+{% endblock %}
+
+{% block main %}
+    {% include 'include/flash.html.twig' %}
+<section class="slides">
+    <div class="contain-slides">
+    <img class="img-banner" src="{{ asset('resources/img/banner/bourg-banner.jpg') }}" alt="">
+    <img class="img-banner" src="{{ asset('resources/img/banner/espa-banner.jpg') }}" alt="">
+    <img class="img-banner" src="{{ asset('resources/img/banner/pdl-banner.jpg') }}" alt="">
+    </div>
+</section>
+
+
+
+{% endblock %}
+
+
+

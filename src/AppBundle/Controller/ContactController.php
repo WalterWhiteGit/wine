@@ -55,13 +55,11 @@ class ContactController extends Controller
 
                 $data= $form->getData();
 
-
-                //exit(dump($data));
-
-
+       // Get values for send mail
                 $mail = $data->getEmail();
                 $firstname = $data->getFirstname();
                 $content = $data->getContent();
+                $object = $data->getObject();
 
                 $em->persist($data);
 
@@ -75,11 +73,11 @@ class ContactController extends Controller
                 //Instancier l'événement.
                 $event = new ContactMailSendMail();
 
-
+        // Set values for send mail
                 $event->setEmail($mail);
                 $event->setFirstname($firstname);
                 $event->setContent($content);
-
+                $event->setObject($object);
 
 
 

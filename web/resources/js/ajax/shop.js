@@ -38,6 +38,7 @@ $(document).ready(function () {
     var country_w=[];
     var area_w =[];
     var type_w =[];
+    var price_w=[];
 
 /*****************************************************************
 /****************************** FUNCTIONS ***********************
@@ -245,24 +246,21 @@ function showType(){
 
 // Si au moins un type de vin est coché
         if (type_w.length > 0) {
-    // Si un pays était coché auparavant
-            if (country_w.length > 0) {
 
+// Si un pays était coché auparavant
+            if (country_w.length > 0) {
                 ajaxDataRequest('/aera',{'type':type_w},area);
                 ajaxDataRequest('/type',{'type':type_w,'country':country_w },display);
             }
 
-    // Si aucun pays coché
+// Si aucun pays coché
             else if(area_w.length > 0){
-
                 ajaxDataRequest('/type',{'type':type_w,'country':country_w },display);
-
-
             }
 
             else {
 
-// Refresh filter Aera Wine
+// Rafraichir le filtre
 
                 ajaxDataRequest('/aera',{'type':type_w},area);
 
@@ -279,10 +277,38 @@ function showType(){
 
             ajaxRequest('/shopwine',display);
             ajaxRequest('/aera',area);
-            $('.fi')
+
         }
 
     });
+}
+
+
+
+function showPrice(){
+
+    $('input[name="price"]').on('change',function () {
+
+       price_w =[];
+
+       $('input[name="price"]:checked').each(function () {
+
+           price_w.push($(this).val());
+
+       });
+
+        if (price_w.length > 0){
+
+           console.log(price_w);
+
+           ajaxDataRequest('/price',{"price":price_w},display);
+
+
+        }
+
+
+    })
+
 }
 
 /***************************************************************************************
@@ -290,7 +316,6 @@ function showType(){
 **************************************************************************************/
     function area (data) {
 
-        console.log(data);
 
         $('.contain-area').empty();
 
@@ -368,12 +393,14 @@ function price (){
 
     contenu  = '<div class="filter-price>';
     contenu += '<div class="contain-value">';
-    contenu += '<div><input type="checkbox" name="price" class="filter" id="type" data-id="1"> - de 30&euro;</div>';
-    contenu += '<div><input type="checkbox" name="price" class="filter" id="type" data-id="2"> 30&euro; à 50&euro;</div>';
-    contenu += '<div><input type="checkbox" name="price" class="filter" id="type" data-id="3"> 50&euro; à 100&euro;</div>';
-    contenu += '<div><input type="checkbox" name="price" class="filter" id="type" data-id="4"> + de 100&euro;</div>';
+    contenu += '<div><input type="checkbox" name="price" class="filter"  value=1 data-id="1"> - de 30&euro;</div>';
+    contenu += '<div><input type="checkbox" name="price" class="filter"  value=2 data-id="2"> 30&euro; à 50&euro;</div>';
+    contenu += '<div><input type="checkbox" name="price" class="filter"  value=3 data-id="3"> 50&euro; à 100&euro;</div>';
+    contenu += '<div><input type="checkbox" name="price" class="filter"  value=4 data-id="4"> + de 100&euro;</div>';
     contenu += '</div></div>';
     $('.contain-price').append(contenu);
+
+    showPrice();
 }
 
 
@@ -384,6 +411,7 @@ function price (){
 
 function display(data) {
 
+
         if (data.length == 0){
 
             $('.contain-list').append('<p>Aucun produits à afficher</p>');
@@ -391,6 +419,8 @@ function display(data) {
 
         else {
             $('.contain-list').empty();
+
+
 
             $.each(data, function (index, value) {
                 // Create elements
@@ -413,7 +443,7 @@ function display(data) {
                 contenu += '<p class="prod-color"><u>Type</u>: <img class="img-type" src="resources/img/shop/'+ value.imgtype +'"></p>';
 
                 contenu += '<p class="prod-description">'+ str.substr(0,300)+'...<a class="prod-more" href="http://localhost:8000/Shop/'+ value.slug+'">';
-                contenu +=  'En savoir plus</a></p>';
+                contenu +=  'Plus d\'informations...</a></p>';
                 contenu += '<div class= "contain-qty">'
                 if (value.quantityInStock > 5){
 
@@ -433,9 +463,11 @@ function display(data) {
                 // Add elements
                 $('.contain-list').append(contenu);
 
-               // $('.prod-test').attr("href","{{ url('shop.product',{'slug':"+value.slug+"}) }}");
-                //$('.prod-test').text(value.slug);
-            })
+            });
+
+            var moreprod = '<div><p class="contain-addprod"  >Afficher plus de produits</p></div>';
+            $('.contain-list').after(moreprod);
+
         }
     }
 /**************************

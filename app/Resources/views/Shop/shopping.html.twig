@@ -5,101 +5,93 @@
     {% endblock %}
 
 {% block main%}
+
 <main>
 
-    <section class="search-bar">
+    <section class="filter-product">
 
-        {{ form_start(form, {'attr':{'novalidate':'novalidate'}, 'attr':{'class':'search-form'} }) }}
+        <h2 class="title-filter">Affiner la recherche</h2>
 
-            <h2 class="search-title">Affiner la recherche</h2>
+<!-- Filtre par type de vin -->
+        <h3 class="choice-filter price">Prix</h3>
+        <div class="contain-price"></div>
+<!-- Filtre par type de vin -->
 
+        <h3 class="choice-filter type">Type</h3>
+        <div class="contain-type"></div>
 
-        <div class="contain-field">
-{# field search by name wine#}
-
-            <div>
-                <div>{{ form_label(form.productName,"Par nom") }}</div>
-                <div>{{ form_widget(form.productName,{'attr':{'list':'listname'}}) }}</div>
-                <datalist id="listname">
-
-                </datalist>
-            </div>
-
-{# field search by year wine#}
-
-            <div>
-                <div>{{ form_label(form.year,"Par année") }}</div>
-                <div>{{ form_widget(form.year,{'attr':{'list':'listyear'}}) }}</div>
-                <datalist id="listyear">
-
-                {% for i in 1998..2015 %}
-
-                <option value="{{ i }}" >
-
-                    {% endfor %}
-                </datalist>
-            </div>
-
-{# field search by area #}
-            <div>
-                <div>{{ form_label(form.productArea, "Par Région") }}</div>
-                <div>{{ form_widget(form.productArea,{'attr':{'list':'listaera'}}) }}</div>
-                <datalist id="listaera">
-
-                </datalist>
-            </div>
-
-{# field search by country#}
-            <div>
-                <div>{{ form_label(form.productCountry, "Par Pays") }}</div>
-                <div>{{ form_widget(form.productCountry,{'attr':{'list':'listcountry'}}) }}</div>
-                <datalist id="listcountry">
-
-                </datalist>
-            </div>
+<!-- Filtrer par pays -->
+        <h3 class="choice-filter country">Pays</h3>
+            <div class="contain-country"></div>
 
 
-{# fiel search by wine area #}
+<!-- Filtre par régions -->
 
+        <h3 class="choice-filter area">Régions</h3>
+        <div class="contain-area"></div>
 
+<!-- Filtre par année -->
+        <h3 class="choice-filter year">Millésime</h3>
 
-
-
-        <div><input type="submit" name="submit" value="Filtrer"></div>
-
-        {{ form_end(form) }}
-
-        </div>
-    </section>
-
-    <section class="contain-list">
-
-    {% for results in results %}
-
-
-        <div class="contain-product">
-            <div>
-                <img src="{{ asset('resources/img/shop/'~results.productImage~'.png') }}" alt="">
+        {%  for year in year %}
+            <div class="filter-year">
+            <div class="contain-value">
+                <input type="checkbox" id="year" name="year" value="{{ year.year }}">
+                {{ year.year }}
                 </div>
-
-
-            <div>
-                <h2 class="prod-title">{{ results.productName }}</h2>
-                <p class="prod-country"><u>Pays</u> :<img src="{{ asset('resources/img/shop/flag/'~results.productCountry~'.png') }}"></p>
-                <p class="prod-line"><u>Région</u> : {{ results.productArea}}</p>
-                <p class="prod-year"><u>Année</u> : {{ results.year }}</p>
-                <p class="prod-description">{{ results.productDescription }}</p>
-                <p class="prod-price">{{ results.salePrice }}&euro;</p>
-                </div>
-
-        </div>
+            </div>
 
         {% endfor %}
+
+
+
+    </section>
+
+
+    <section class="container-products">
+        <div class="promo">
+        {% if date  < '26/12/2017' %}
+
+            <img src="{{ asset('resources/img/banner/promo.gif') }}">
+
+        {% else %}
+
+            <p>La date est depasée</p>
+
+        {% endif %}
+        </div>
+
+<!--
+        <section class="search-bar">
+
+           <div class="contain-filter">
+            <p>Trier par :</p>
+
+            <select id="tri">
+                <option value="nul" selected >-- aucun tri --</option>
+                <option value="asc">Prix les moins chers</option>
+                <option value="desc">Prix les plus chers</option>
+            </select>
+
+               </div>
+
+        </section>
+-->
+        <section class="contain-list">
+         <!-- Affichage en ajax de la liste des produits -->
+        </section>
+
+
+        <button class="buttonload">
+            <i class="fa fa-refresh fa-spin"></i>chargement des produits...
+        </button>
+
     </section>
 </main>
 
     {% block javascripts %}
-        <script src="{{ asset('resources/js/ajax/filter.js') }}"></script>
+        <script src="{{ asset('resources/js/animation/animate.js') }}"></script>
+        <script src="{{ asset('resources/js/ajax/shop.js') }}"></script>
         {% endblock %}
 
 {% endblock %}

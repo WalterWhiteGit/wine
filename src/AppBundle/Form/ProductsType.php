@@ -2,9 +2,9 @@
 
 namespace AppBundle\Form;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProductsType extends AbstractType
 {
@@ -16,20 +16,22 @@ class ProductsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('productName')
-                ->add('productLine')
-                ->add('year');
+            ->add('productName')
+            ->add('year')
+            ->add('productCountry');
+
     }
-    
+
+        /**
+         * {@inheritdoc}
+         */
+        public function getBlockPrefix()
+        {
+            return 'appbundle_products';
+        }
 
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
-    {
-        return 'appbundle_products';
-    }
+
 
 
 }

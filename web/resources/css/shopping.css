@@ -1,0 +1,300 @@
+
+
+body{
+    background-image: url('../img/shop-img.jpg');
+    background-size: 100%;
+    background-attachment: fixed;
+}
+
+
+main{
+    margin: auto;
+    width: 100%;
+    display: flex;
+}
+
+
+.filter-product{
+
+    background-color: rgba(0,0,0,0.7);
+    color:white;
+    font-weight: bold;
+    border-right: solid white 2px;
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+}
+
+.activ-filter, .area-filter p{
+
+    font-size: 14px;
+    background-color: black;
+}
+
+
+.activ-filter span, .area-filter span{
+
+    text-align: right;
+    width: 100%;
+    margin-right: 10px;
+    color: red;
+    cursor: pointer;
+}
+
+.clear-filter{
+
+    text-align: center;
+    background-color: #F5871F;
+    margin-top:10px;
+}
+.choice-filter{
+
+    width: 100%;
+    font-size: 24px;
+    background-color: #580D1D;
+    text-align: center;
+    border-bottom: solid 1px white;
+    font-family: 'Lobster Two', cursive;
+}
+
+.filter-product div{
+    padding: 5px 0px 5px 5px;
+}
+
+.filter-year{
+    display:none;
+}
+
+
+.filter-area{
+
+    font-size: 18px;
+}
+
+.contain-filter{
+    width: 100%;
+    margin: 20px 0px 0px 10px;
+    color:white;
+    display: inline-flex;
+    align-items: center;
+}
+
+
+.contain-filter p{
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+
+.contain-value>div{
+
+    display: flex;
+    align-items: center;
+}
+
+
+
+/*
+Contenant liste des produits et du filtre rapide
+*/
+
+.container-products{
+    width: 85%;
+}
+
+/* Container all products*/
+.contain-list{
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+}
+
+/* Container product */
+.contain-product{
+
+    width: 40%;
+    background-color: rgba(255,255,255,0.9);
+    display: flex;
+    margin: 20px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.contain-type img{
+
+    background-color:white;
+    width: 40px;
+    border-radius: 50%;
+}
+
+.prod-title{
+
+    text-align: center;
+}
+
+.prod-price-img{
+
+   margin-right: 10px;
+
+}
+.add-cart{
+
+    background-color:#67AB5B;
+    border-radius: 8px;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 10px 5px 10px 5px;
+}
+
+.circle-qtyH, .circle-qtyL, .circle-qtyN{
+
+    min-height:15px;
+    height:15px;
+    width: 15px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/*
+icone disponibilité produits
+ */
+
+.circle-qtyH{
+
+    background-color: #66dd66;
+}
+
+.circle-qtyL{
+
+    background-color: #F5871F;
+}
+
+.circle-qtyN{
+    background-color: #ff0000;
+}
+
+.prod-line, .prod-year,.prod-country, .prod-color {
+
+    color: #580D1D;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+
+
+.prod-description{
+
+    border: solid 2px #580D1D;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #580D1D;
+    color: white;
+}
+
+.prod-country>img, .filter-flag{
+
+    width: 25px;
+    margin: 0px 10px 0px 10px;
+
+}
+.img-type{
+
+    width: 40px;
+}
+
+.prod-price{
+    margin-top: 10px;
+    font-weight: bold;
+    font-size:20px;
+    text-align: center;
+}
+
+.contain-qty{
+
+    text-align: center;
+}
+.prod-quantity{
+
+    font-style: italic;
+}
+
+.prod-more{
+
+    color:#580D1D;
+    background-color: #FFFFFF;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 5px;
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+.search-bar{
+    width: 100%;
+    margin: auto;
+
+}
+.search-form{
+
+    margin-top: 20px;
+    background-color: #580D1D;
+    text-align: center;
+    padding: 10px 0px 10px 0px;
+    border-radius: 10px;
+}
+
+.search-title{
+
+    color:white;
+}
+.contain-field{
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+
+.contain-field>div{
+    color: white;
+    margin: 20px;
+    font-size: 20px;
+}
+
+label{
+    font-family: 'Lobster Two', cursive;
+}
+
+
+
+.buttonload {
+    background-color: #580D1D;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius:10px;
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    top:50%;
+}
+
+.fa-refresh{
+    display: block;
+}
+
+.promo{
+
+    display: none;
+
+}
+.promo img{
+
+    width: 100%;
+}

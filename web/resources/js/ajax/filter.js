@@ -107,7 +107,7 @@ $(document).ready(function () {
             $.each(data, function (index, value) {
 
                 var option = document.createElement('option');
-                option.setAttribute('value', value.productArea);
+                option.setAttribute('value', value.area);
                 dataAera.append(option);
 
             })

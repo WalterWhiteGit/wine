@@ -8,10 +8,14 @@
 
 {% block main %}
 
+<main>
 <section class="contain-form">
+
+
+
     {{ form_start(form,{'attr':{'novalidate':'novalidate'},'attr':{'class':'contact-form' } }) }}
 
-
+    <h2 class="contact">Nous contacter</h2>
     <div>
         {{ form_label(form.object,"Votre demande concerne :") }}
     </div>
@@ -59,11 +63,14 @@
 
     {# message field#}
     <div>
-        {{ form_label(form.content,"Votre message") }}
+        {{ form_label(form.content,"Votre message")}}
         </div>
     <div>
-        {{ form_widget(form.content) }}
+        {{ form_widget(form.content,{'attr':{'class':'message'}}) }}
         </div>
+    <div>
+        <span class="size-message"></span>
+    </div>
 
 
 
@@ -84,6 +91,8 @@
 
 </section>
 
+</main>
 
 
 {% endblock %}
+

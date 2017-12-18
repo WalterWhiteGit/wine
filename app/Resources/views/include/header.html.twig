@@ -1,0 +1,21 @@
+
+{% block stylesheets %}
+<link href="https://fonts.googleapis.com/css?family=Lobster+Two" rel="stylesheet">
+{% endblock %}
+<header>
+    <div class="contain-customer">
+
+        <p class="contain-basket">Votre panier<i class="fa fa-shopping-basket" aria-hidden="true"> 0 article(s)</i></p>
+
+    </div>
+    <nav>
+        <ul class="nav-menu">
+            <li><a href="{{ url('homepage.accueil') }}"><i class="fa fa-home fa-2x" aria-hidden="true"></i></a></li>
+            <li><a href="#">Le bar</a></li>
+            <li><a href="#">La carte</a></li>
+            <li><a href="{{ url('shop.shopping')}}">La boutique</a></li>
+            <li><a href="{{ url('contact.contact') }}">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+

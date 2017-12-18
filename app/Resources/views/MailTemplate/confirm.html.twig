@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<style>
+
+
+    body{
+
+        display:flex;
+
+    }
+
+    h1, p{
+
+        color: white;
+        font-weight: bold;
+
+    }
+
+    .contain-mail{
+
+        margin: auto 0;
+        text-align: center;
+        border:solid 2px white;
+    }
+
+</style>
+
+<body style='background: url("{{ absolute_url('resources/img/shop-img.jpg') }}")
+        no-repeat; background-size: contain;height: 1000px; min-height: 1000px'>
+
+
+<div class="contain-mail">
+<h1>Coucou {{ firstname }}</h1>
+
+<p> Votre demande {{ reason }} a bien été prise en compte.</p>
+<p>Nous reviendrons vers vous le plus rapidement possible </p>
+<p>Cordialement,</p>
+<p>L'équipe UnVindiVin</p>
+</div>
+</body>
+
+</html>
+
