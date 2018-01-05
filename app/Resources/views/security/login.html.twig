@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('resources/css/login.css') }}">
+    {% endblock %}
+
+
+{% block header %}
+
+     {% include ':include:header.html.twig' %}
+
+    {% endblock %}
+
+{% block main %}
+
+
+    <main>
+        <section class="form-login">
+            <h2>Veuillez vous identifier</h2>
+
+            <form action="{{ url('app.security.login') }}" method="post">
+
+                <div>
+                    <p><label for="username">Identifiant</label></p>
+                    <p><input type="text" id="username" name="_username" value="{{ last_username }}"></p>
+                </div>
+
+                <div>
+                    <p><label for="password">Mot de Passe</label></p>
+                    <p><input type="password" id="password" name="_password"></p>
+                </div>
+
+                <div>
+                    <p class="password-forgot"><a href="{{ url('app.account.forgot-password') }}">J'ai oublié mon mot de passe</a></p>
+                </div>
+<!-- Si mauvais mot de passe, on affiche une erreur -->
+
+                {% if error %}
+
+                    <div class="error-login">{{ error.messageKey|trans(error.messageData,'security')}}</div>
+
+                    {% endif %}
+
+<!-- Affichade du décompte du nb d'essais -->
+                {% if essai %}
+
+                    {% if nbessai - essai > 1 %}
+
+                         <div class="essai-login">Il vous reste {{ nbessai - essai }} essais</div>
+
+                        {% else %}
+
+                        <div class="essai-login">Plus que  {{ nbessai - essai }} essai</div>
+
+                            {% endif %}
+
+                    {% endif %}
+
+                <button type="submit">valider</button>
+
+            </form>
+            
+            
+        </section>
+
+    </main>
+
+
+{% endblock %}
+
