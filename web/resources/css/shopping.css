@@ -92,7 +92,16 @@ main{
     align-items: center;
 }
 
+.containt-range{
 
+    text-align: center;
+    margin:0 auto;
+
+}
+.minprice, .maxprice{
+
+    font-size: 20px;
+}
 
 /*
 Contenant liste des produits et du filtre rapide
@@ -111,12 +120,16 @@ Contenant liste des produits et du filtre rapide
 
 }
 
-/* Container product */
+
 .contain-product{
 
+    display: flex;
+
+}
+/* Container product */
+.product{
     width: 40%;
     background-color: rgba(255,255,255,0.9);
-    display: flex;
     margin: 20px;
     padding: 10px;
     border-radius: 10px;
@@ -268,6 +281,14 @@ icone disponibilité produits
 
 label{
     font-family: 'Lobster Two', cursive;
+}
+
+/* Message results ko */
+
+.no-results{
+
+    color:white;
+    font-size: 34px;
 }
 
 

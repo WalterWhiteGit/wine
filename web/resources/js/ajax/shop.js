@@ -2,6 +2,44 @@ $(document).ready(function () {
 
 /********************************************* Filtre *************************************
 ******************************************************************************************/
+// Display Price Range
+    const pricemin = $('#price-min');
+    const pricemax = $('#price-max');
+    let prices;
+
+    // Prix minimum
+    pricemin.on('input',function () {
+
+        prices = $(this).val();
+
+        let minprice = $('#minprice');
+
+
+        minprice.text(prices);
+
+       minprice.append('<a>&euro;</a>');
+
+    });
+
+    // prix maximum
+    pricemax.on('input',function () {
+
+        prices = $(this).val();
+
+        let maxprice = $('#maxprice');
+
+
+        maxprice.text(prices);
+
+        maxprice.append('<a>&euro;</a>');
+
+    });
+
+    pricemin.on('change',function () {
+
+        ajaxDataRequest('/test',{'price':prices},display);
+    });
+
 // Icone de chargement
 
 
@@ -43,6 +81,8 @@ $(document).ready(function () {
 /*****************************************************************
 /****************************** FUNCTIONS ***********************
  ****************************************************************/
+
+
 
 // Call Ajax
 
@@ -258,6 +298,24 @@ function showType(){
                 ajaxDataRequest('/type',{'type':type_w,'country':country_w },display);
             }
 
+            else if (price_w.length >0){
+
+                ajaxDataRequest('/type',{'type':type_w,'price':price_w},display);
+
+            }
+
+
+            else if (area_w.length > 0 && price_w.length > 0){
+
+                ajaxDataRequest('/type',{'type':type_w,'area':area_w,'price':price_w},display);
+            }
+
+
+            else if (country_w.length > 0 && price_w.length > 0){
+
+                ajaxDataRequest('/type',{'type':type_w,'country':country_w,'price':price_w},display)
+            }
+
             else {
 
 // Rafraichir le filtre
@@ -293,19 +351,37 @@ function showPrice(){
 
        $('input[name="price"]:checked').each(function () {
 
-           price_w.push($(this).val());
+           price_w.push($(this).data('id'));
 
        });
 
         if (price_w.length > 0){
 
-           console.log(price_w);
 
-           ajaxDataRequest('/price',{"price":price_w},display);
+            if(type_w.length > 0){
 
+              ajaxDataRequest('/price',{"price":price_w,"type":type_w},display);
+
+            }
+
+            else {
+
+               ajaxDataRequest('/test', {"price": price_w}, display);
+
+            }
 
         }
 
+        else {
+                if(type_w.length > 0){
+
+                    ajaxDataRequest('/type',{"type": type_w},display);
+                }
+
+                else {
+                    ajaxRequest('/shopwine',display);
+                }
+        }
 
     })
 
@@ -393,10 +469,10 @@ function price (){
 
     contenu  = '<div class="filter-price>';
     contenu += '<div class="contain-value">';
-    contenu += '<div><input type="checkbox" name="price" class="filter"  value=1 data-id="1"> - de 30&euro;</div>';
-    contenu += '<div><input type="checkbox" name="price" class="filter"  value=2 data-id="2"> 30&euro; à 50&euro;</div>';
-    contenu += '<div><input type="checkbox" name="price" class="filter"  value=3 data-id="3"> 50&euro; à 100&euro;</div>';
-    contenu += '<div><input type="checkbox" name="price" class="filter"  value=4 data-id="4"> + de 100&euro;</div>';
+    contenu += '<div><input type="checkbox" name="price" class="filter"  data-id=1> - de 30&euro;</div>';
+    contenu += '<div><input type="checkbox" name="price" class="filter"  data-id=2> 30&euro; à 50&euro;</div>';
+    contenu += '<div><input type="checkbox" name="price" class="filter"  data-id=3> 50&euro; à 100&euro;</div>';
+    contenu += '<div><input type="checkbox" name="price" class="filter"  data-id=4> + de 100&euro;</div>';
     contenu += '</div></div>';
     $('.contain-price').append(contenu);
 
@@ -414,12 +490,13 @@ function display(data) {
 
         if (data.length == 0){
 
-            $('.contain-list').append('<p>Aucun produits à afficher</p>');
+
+            $('.contain-list').empty().append('<h1 class="no-results">Aucun produits correspondants</h1>');
         }
 
         else {
             $('.contain-list').empty();
-
+            //$('more-')
 
 
             $.each(data, function (index, value) {
@@ -427,41 +504,63 @@ function display(data) {
 
                 var str =  value.productDescription;
                 var contenu;
-                contenu = '<div class="contain-product">';
-                contenu += '<div class="prod-price-img"><img class="prod-img" src="resources/img/shop/'+value.productImage+'.png">' +
-                                 '<p class="prod-price">'+value.salePrice.toFixed(2) +'&euro;</p>' +
-                                 '<p class="add-cart">Ajouter au panier</p></div>';
-// Add title product
-                contenu += '<div><h3 class="prod-title">'+value.productName.toUpperCase()+'</h3>';
-// Add picture product
-                contenu += '<p class= "prod-country"><u>Pays</u> :<img src="resources/img/shop/flag/'+value.productCountry+'.png"></p>';
-// Add aera product
-                contenu += '<p class="prod-line"><u>Région</u> : '+value.area+'</p>';
-//  Add type of product
-                contenu += '<p class="prod-year"><u>Année</u> : '+value.year+'</p>';
-// Add type of product
-                contenu += '<p class="prod-color"><u>Type</u>: <img class="img-type" src="resources/img/shop/'+ value.imgtype +'"></p>';
 
-                contenu += '<p class="prod-description">'+ str.substr(0,300)+'...<a class="prod-more" href="http://localhost:8000/Shop/'+ value.slug+'">';
-                contenu +=  'Plus d\'informations...</a></p>';
-                contenu += '<div class= "contain-qty">'
+                contenu  = '<div class="product">' ;
+                contenu += '<h3 class="prod-title">'+value.productName.toUpperCase()+'</h3>';
+
+                contenu += '<div class="contain-product">';
+                contenu +=      '<div class="prod-price-img">';
+                contenu +=          '<img class="prod-img" src="resources/img/shop/'+value.productImage+'.png">' +
+                                    '<p class="prod-price">'+value.salePrice.toFixed(2) +'&euro;</p>' +
+                                    '<p class="add-cart" data-id='+ value.id+'>Ajouter au panier</p>';
+                contenu +=      '</div>';
+
+// Add title product
+                contenu +=      '<div class="prod-details">';
+// Add picture product
+                contenu +=          '<p class= "prod-country"><u>Pays</u> :<img src="resources/img/shop/flag/'+value.productCountry+'.png"></p>';
+// Add aera product
+                contenu +=          '<p class="prod-line"><u>Région</u> : '+value.area+'</p>';
+// Add type of product
+                contenu +=          '<p class="prod-year"><u>Année</u> : '+value.year+'</p>';
+// Add type of product
+                contenu +=          '<p class="prod-color"><u>Type</u>: <img class="img-type" src="resources/img/shop/'+ value.imgtype +'"></p>';
+
+                contenu +=          '<p class="prod-description">'+ str.substr(0,300)+'...<a class="prod-more" href="http://localhost:8000/Shopping/Product/'+ value.slug+'">Plus d\'informations...</a></p>';
+
+// Add Quantity in stock
+                contenu +=          '<div class= "contain-qty">';
                 if (value.quantityInStock > 5){
 
-                    contenu += '<div class="circle-qtyH"></div><a class="prod-quantity">    Disponible dans notre cave</a></div>'
+                contenu +=              '<div class="circle-qtyH"></div>';
+                contenu +=              '<a class="prod-quantity">    Disponible dans notre cave</a>';
+                contenu +=          '</div>';
                 }
                 else if (value.quantityInStock == 0){
 
-                    contenu += '<div class="circle-qtyN"></div><a class="prod-quantity">    Momentanément absent de notre cave</a>'
+                contenu +=              '<div class="circle-qtyN"></div>';
+                contenu +=              '<a class="prod-quantity">    Momentanément absent de notre cave</a>';
+                contenu +=          '</div>';
+
                 }
                 else {
 
-                    contenu += '<div class="circle-qtyL"></div><a class="prod-quantity">    Plus que '+value.quantityInStock+' dans notre cave</a>'
-                }
+                contenu +=              '<div class="circle-qtyL"></div>';
+                contenu +=              '<a class="prod-quantity">    Plus que '+value.quantityInStock+' dans notre cave</a>'
+                contenu +=          '</div>';
 
-                contenu += '</div></div>';
+                }
+// Close class prod-details
+                contenu +=          '</div>';
+// Close class contain products
+                contenu +=      '</div>';
+                contenu +=      '</div>';
+
+
 
                 // Add elements
                 $('.contain-list').append(contenu);
+
 
             });
 

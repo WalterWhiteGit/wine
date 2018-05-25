@@ -28,16 +28,59 @@
     padding: 5px;
 }
 
-.contain-basket{
+.contain-basket, .contain-user{
     display: flex;
-    flex-direction: column;
+    align-items: center;
     text-align: center;
-    width: 200px;
     background-color: #580D1D;
     border-radius: 8px;
     border: #FFFFFF 2px solid;
     padding: 5px;
+    margin:0px 10px 0px 10px;
+
 }
+
+.contain-admin{
+
+    background-color: #580D1D;
+    border: #FFFFFF 2px solid;
+    border-radius: 8px;
+
+}
+
+.log{
+    width:auto;
+    max-width:300px;
+}
+
+.create{
+
+    width: 130px;
+
+}
+
+.contain-shops{
+    display: flex;
+    align-items: center;
+}
+
+#contain-basket{
+    text-align: center;
+
+    border-radius: 8px;
+    border: #FFFFFF 1px solid;
+    padding: 5px;
+    margin-right: 10px;
+    font-size: 10px;
+}
+
+.contain-user>a{
+
+    text-decoration: none;
+    color:white
+}
+
+
 
 
 .nav-menu{

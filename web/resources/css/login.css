@@ -1,0 +1,40 @@
+body{
+
+    background-image: url("../img/login-img.jpg");
+    background-size: 100%;
+    background-attachment: fixed;
+
+}
+
+.form-login{
+
+    text-align: center;
+}
+
+form{
+    width: 50%;
+    border: solid 2px white;
+    margin: 0 auto;
+    background-color: rgba(0,0,0,0.7);
+}
+
+form label{
+
+    color: white;
+}
+
+form button{
+
+    margin-top:10px;
+    padding: 5px;
+    background-color: #66dd66;
+    color: white;
+    font-weight: bold;
+}
+
+.password-forgot a{
+
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 14px;
+}
