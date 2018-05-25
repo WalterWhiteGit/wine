@@ -18,7 +18,7 @@ class ProductsRepository extends \Doctrine\ORM\EntityRepository
 
 
         $results = $this->createQueryBuilder('p')
-                        ->select('t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
+                        ->select('p.id','t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
                                         'p.salePrice','p.productDescription','a.area','p.productCountry','p.slug')
                         ->innerJoin('p.winetype','t')
                         ->innerJoin('p.winearea','a')
@@ -117,7 +117,7 @@ Récupérer la liste des produits correspondant à une ou plusieurs régions
     {
 
         $results = $this->createQueryBuilder('p')
-                        ->select('t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
+                        ->select('p.id','t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
                         'p.salePrice','p.productDescription','p.slug','a.area','p.productCountry')
                         ->innerJoin('p.winetype','t')
                         ->innerJoin('p.winearea','a')
@@ -139,7 +139,7 @@ Récupérer la liste des produits correspondant à un ou plusieurs pays
     {
 
         $results = $this->createQueryBuilder('p')
-                        ->select('t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
+                        ->select('p.id','t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
                                  'p.salePrice','p.productDescription','a.area','p.productCountry','p.slug')
                          ->innerJoin('p.winetype','t')
                          ->innerJoin('p.winearea','a')
@@ -199,7 +199,7 @@ Récupérer le détails d'un produit à partir de son slug
     {
 
         $results = $this->createQueryBuilder('p')
-                        ->select('t.type','p.quantityInStock','p.year','p.productImage','p.productName',
+                        ->select('p.id','t.type','p.quantityInStock','p.year','p.productImage','p.productName',
                                         'p.salePrice','p.productDescription','a.area','p.productCountry','p.slug')
                         ->innerJoin('p.winetype','t')
                         ->innerJoin('p.winearea','a')
@@ -220,7 +220,7 @@ Récupérer la liste des produits correspondant à un ou plusieurs types de vin
 
         // Build Query
         $results = $this->createQueryBuilder('p')
-                        ->select('t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
+                        ->select('p.id','t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
                                         'p.salePrice','p.productDescription','a.area','p.productCountry','p.slug')
                         ->innerJoin('p.winetype','t')
                         ->innerJoin('p.winearea','a')
@@ -238,7 +238,7 @@ Récupérer la liste des produits correspondant à un ou plusieurs types de vin
     public function displayTypeByCountry(array $winetype, array $countrytype){
 
         $results = $this->createQueryBuilder('p')
-                        ->select('t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
+                        ->select('p.id','t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
                                         'p.salePrice','p.productDescription','a.area','p.productCountry','p.slug')
                         ->innerJoin('p.winetype','t')
                         ->innerJoin('p.winearea','a')
@@ -252,11 +252,67 @@ Récupérer la liste des produits correspondant à un ou plusieurs types de vin
 
     }
 
+    public function displayTypeByLowPrice(array $winetype, int $price ){
+
+        $results = $this->createQueryBuilder('p')
+                        ->select('p.id','t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
+                        'p.salePrice','p.productDescription','a.area','p.productCountry','p.slug')
+                        ->innerJoin('p.winetype','t')
+                        ->innerJoin('p.winearea','a')
+                        ->where('t.type IN(:type)')
+                        ->andWhere('p.salePrice <= :price')
+                        ->setParameters(['type'=>$winetype,'price'=>$price])
+                        ->orderBy('p.salePrice','ASC')
+                        ->getQuery()
+                        ->getResult();
+
+        return $results;
+
+    }
+
+
+    public function displayTypeByHighPrice(array $winetype, int $price ){
+
+        $results = $this->createQueryBuilder('p')
+            ->select('p.id','t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
+                'p.salePrice','p.productDescription','a.area','p.productCountry','p.slug')
+            ->innerJoin('p.winetype','t')
+            ->innerJoin('p.winearea','a')
+            ->where('t.type IN(:type)')
+            ->andWhere('p.salePrice >= :price')
+            ->setParameters(['type'=>$winetype,'price'=>$price])
+            ->orderBy('p.salePrice','ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+
+    }
+
+
+    public function displayTypeByPrice(array $winetype, array $price){
+
+        $results = $this->createQueryBuilder('p')
+                        ->select('p.id','t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
+                                        'p.salePrice','p.productDescription','a.area','p.productCountry','p.slug')
+                        ->innerJoin('p.winetype','t')
+                        ->innerJoin('p.winearea','a')
+                        ->where('t.type IN (:type)')
+                        ->andWhere('p.salePrice BETWEEN :price1 AND :price2')
+                        ->setParameters(['type'=>$winetype,'price1'=>$price[0],'price2'=>$price[1]])
+                        ->orderBy('p.salePrice','ASC')
+                        ->getQuery()
+                        ->getResult();
+
+        return $results;
+
+    }
+
 
     public function displayByAeraType(array $winetype,array $wineaera){
 
         $results = $this->createQueryBuilder('p')
-                        ->select('t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
+                        ->select('p.id','t.type','t.imgtype','p.quantityInStock','p.year','p.productImage','p.productName',
                                        'p.salePrice','p.productDescription','p.slug','a.area','p.productCountry','p.slug')
                         ->innerJoin('p.winetype','t')
                         ->innerJoin('p.winearea','a')
@@ -267,6 +323,27 @@ Récupérer la liste des produits correspondant à un ou plusieurs types de vin
                         ->getResult();
 
         return $results;
+
+
+    }
+
+
+
+    public function displayTypeByPriceArea(array $winetype, array $area,array $price){
+
+        $results = $this->createQueryBuilder('p')
+                        ->select('p.id','t.type','t.imgtype','p.quantityInStock','p.year','p.productImage',
+                                       'p.productName', 'p.salePrice','p.productDescription','p.slug','a.area','p.productCountry','p.slug')
+                        ->innerJoin('p.winetype','t')
+                        ->innerJoin('p.winearea','a')
+                        ->where('p.winetype IN (:type)')
+                        ->andWhere('p.winearea IN (:area)')
+                        ->setParameters(['type'=>$winetype,'area'])
+                        ->getQuery()
+                        ->getResult();
+
+
+
 
 
     }
@@ -326,13 +403,12 @@ Récupérer la liste des produits correspondant à un ou plusieurs types de vin
     }
 
 
-    public function displayByPrice(int $price){
+    public function displayByMinPrice(int $price){
 
 
-            //exit(dump($price));
 
             $results = $this->createQueryBuilder('p')
-                            ->select('t.type', 't.imgtype', 'p.quantityInStock', 'p.year', 'p.productImage', 'p.productName',
+                            ->select('p.id','t.type', 't.imgtype', 'p.quantityInStock', 'p.year', 'p.productImage', 'p.productName',
                                 'p.salePrice', 'p.productDescription', 'p.slug', 'a.area', 'p.productCountry', 'p.slug')
                             ->innerJoin('p.winearea', 'a')
                             ->innerJoin('p.winetype', 't')
@@ -340,12 +416,34 @@ Récupérer la liste des produits correspondant à un ou plusieurs types de vin
                             ->setParameter('price',$price)
                             ->orderBy('p.salePrice','ASC')
                             ->getQuery()
-                ->getResult();
+                            ->getResult();
 
-            // exit(dump($results));
+
 
             return $results;
 
+    }
+
+
+    public function displayByMaxPrice(int $price){
+
+
+        //exit(dump($price));
+
+        $results = $this->createQueryBuilder('p')
+            ->select('p.id','t.type', 't.imgtype', 'p.quantityInStock', 'p.year', 'p.productImage', 'p.productName',
+                'p.salePrice', 'p.productDescription', 'p.slug', 'a.area', 'p.productCountry', 'p.slug')
+            ->innerJoin('p.winearea', 'a')
+            ->innerJoin('p.winetype', 't')
+            ->where('p.salePrice >= :price')
+            ->setParameter('price',$price)
+            ->orderBy('p.salePrice','ASC')
+            ->getQuery()
+            ->getResult();
+
+        // exit(dump($results));
+
+        return $results;
 
     }
 
@@ -353,7 +451,7 @@ Récupérer la liste des produits correspondant à un ou plusieurs types de vin
     public function displayByPriceRange( array $price){
 
             $results = $this->createQueryBuilder('p')
-                            ->select('t.type', 't.imgtype', 'p.quantityInStock', 'p.year', 'p.productImage', 'p.productName',
+                            ->select('p.id','t.type', 't.imgtype', 'p.quantityInStock', 'p.year', 'p.productImage', 'p.productName',
                                 'p.salePrice', 'p.productDescription', 'p.slug', 'a.area', 'p.productCountry', 'p.slug')
                             ->innerJoin('p.winearea', 'a')
                             ->innerJoin('p.winetype', 't')
@@ -368,6 +466,64 @@ Récupérer la liste des produits correspondant à un ou plusieurs types de vin
         return $results;
 
 
+    }
+
+    public function displayPriceByType (int $price, array $type, string $operator){
+
+            $results = $this->createQueryBuilder('p')
+                            ->select('p.id','t.type', 't.imgtype', 'p.quantityInStock', 'p.year', 'p.productImage', 'p.productName',
+                                        'p.salePrice', 'p.productDescription', 'p.slug', 'a.area', 'p.productCountry', 'p.slug')
+                            ->innerJoin('p.winearea','a')
+                            ->innerJoin('p.winetype','t')
+                            ->where('p.salePrice'.$operator.' :price')
+                            ->andWhere('t.type IN (:type)')
+                            ->setParameters(['price'=>$price,'type'=>$type])
+                            ->orderBy('p.salePrice','ASC')
+                            ->getQuery()
+                            ->getResult();
+
+            return $results;
+    }
+
+
+    public function displayByOnePrice(int $price, string $operator){
+
+            $results = $this->createQueryBuilder('p')
+                            ->select('p.id','t.type', 't.imgtype', 'p.quantityInStock', 'p.year', 'p.productImage', 'p.productName',
+                                        'p.salePrice', 'p.productDescription', 'p.slug', 'a.area', 'p.productCountry', 'p.slug')
+                            ->innerJoin('p.winearea','a')
+                            ->innerJoin('p.winetype','t')
+                            ->where('p.salePrice'.$operator.' :price')
+                            ->setParameter('price',$price)
+                            ->orderBy('p.salePrice','ASC')
+                            ->getQuery()
+                            ->getResult();
+
+            return $results;
+
+
+    }
+
+
+
+    public function displayByTwoPrice(array $price){
+
+
+        //exit(dump($price));
+
+            $results = $this->createQueryBuilder('p')
+                             ->select('p.id','t.type', 't.imgtype', 'p.quantityInStock', 'p.year', 'p.productImage', 'p.productName',
+                                    'p.salePrice', 'p.productDescription', 'p.slug', 'a.area', 'p.productCountry', 'p.slug')
+                            ->innerJoin('p.winearea','a')
+                            ->innerJoin('p.winetype','t')
+                            ->where('p.salePrice <= :minprice')
+                            ->orWhere('p.salePrice >= :maxprice')
+                            ->setParameters(['minprice'=>$price[0], 'maxprice'=>$price[1]])
+                            ->orderBy('p.salePrice','ASC')
+                            ->getQuery()
+                            ->getResult();
+
+            return $results;
     }
 
 }
